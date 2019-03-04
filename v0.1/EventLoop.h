@@ -3,11 +3,11 @@
 
 #include <sys/syscall.h>
 #include <sys/types.h>
-#include <assert.h>
 #include <vector>
 #include <poll.h>
 #include <signal.h>
 #include "Epoll.h"
+#include "Mutex.h"
 
 class Handler;
 
@@ -21,11 +21,12 @@ public:
 private:
 	void addToLoop();
 	bool isLooping();
-	const pid_t thread_id;
+	pid_t thread_id;
 	std::vector<int> fds;
 	bool isLoop;
 	bool isQuit;
 	Epoll* e;
+	Mutex mutex;
 };
 
 #endif

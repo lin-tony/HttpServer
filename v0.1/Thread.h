@@ -3,6 +3,8 @@
 
 #include <pthread.h>
 #include <iostream>
+#include <unistd.h>
+#include <sys/syscall.h>
 
 class Thread{
 public:

@@ -2,7 +2,6 @@
 
 EventLoop::EventLoop()
 	:isLoop(false),
-	 thread_id(static_cast<pid_t>(syscall(SYS_gettid))),
 	 isQuit(false),
 	 e(new Epoll(this)){
 
@@ -11,9 +10,9 @@ EventLoop::EventLoop()
 void EventLoop::loop(){
 	isLoop = true;
 	isQuit = false;
-
+	thread_id = static_cast<pid_t>(syscall(SYS_gettid));
 	while(!isQuit){
-		std::cout << thread_id<<"-----------Looping" << std::endl;
+		std::cout << "--------Thread: " << thread_id << " Looping" << std::endl;
 		addToLoop();
 		std::vector<Handler*> activeEvents;
 		activeEvents.clear();
@@ -35,18 +34,22 @@ void EventLoop::quit(){
 }
 
 void EventLoop::addToLoop(const int fd){
-	std::cout << "Add " << fd << " to Loop." << std::endl;
+	std::cout << "Thread: " << thread_id << " add socket: " << fd << " to Loop." << std::endl;
+	mutex.lock();
 	fds.push_back(fd);
+	mutex.unlock();
 }
 
 void EventLoop::addToLoop(){
+	mutex.lock();
 	if(fds.empty()){
-		std::cout << "fds empty." << std::endl;
+		std::cout <<  "Thread: " << thread_id << " fds empty." << std::endl;
 	}else{
 		for(int i = 0; i < fds.size(); ++i){
 			e->addToEpoll(fds[i]);
 		}
 		fds.clear();
-		std::cout << "Add all fd into Loop" << std::endl;
+		std::cout <<  "Thread: " << thread_id << " add all fd into Loop" << std::endl;
 	}
+	mutex.unlock();
 }
