@@ -35,13 +35,13 @@ void EventLoop::quit(){
 
 void EventLoop::addToLoop(const int fd){
 	std::cout << "Thread: " << thread_id << " add socket: " << fd << " to Loop." << std::endl;
-	mutex.lock();
+	mtx.lock();
 	fds.push_back(fd);
-	mutex.unlock();
+	mtx.unlock();
 }
 
 void EventLoop::addToLoop(){
-	mutex.lock();
+	mtx.lock();
 	if(fds.empty()){
 		std::cout <<  "Thread: " << thread_id << " fds empty." << std::endl;
 	}else{
@@ -51,5 +51,5 @@ void EventLoop::addToLoop(){
 		fds.clear();
 		std::cout <<  "Thread: " << thread_id << " add all fd into Loop" << std::endl;
 	}
-	mutex.unlock();
+	mtx.unlock();
 }

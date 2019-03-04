@@ -20,6 +20,7 @@ A simple HTTP static file server, which is written on C++11 language. Use Reacto
 |Parse | 用于解析客户端HTTP请求|
 |Buffer | 缓冲区，缓存请求和响应的内容，将请求的文件放入缓冲区，将缓冲区的内容发送到对应套接字|
 |Handler| 控制处理HTTP请求并返回响应|
+|Mutex| 互斥锁|
 
 
 # Reactor模式概述：
@@ -39,7 +40,10 @@ epoll的触发模式使用了ET模式。ET模式每次读，必须读到不能�
 
 # To do list
 - <del>将LT改为ET模式</del>（完成，更新了Buffer::readFd和Epoll::addToEpoll，此前已在Socket::Accept中用了setNonBlock(设置非阻塞)）
-- 增加condition和mutex（因为涉及到跨线程任务分配，需要加锁，这里的锁由某个特定线程中的loop创建，只会被该线程和主线程竞争。）
+- <del>增加condition和mutex</del>（更新EventLoop类，在主线程将连接好的套接字加入到子线程等待队列中时加锁 和 子线程将等待队列中的套接字加入到监听队列中）
 - C++11线程池改造
 - 处理head请求
 - 压力测试
+
+# C++11元素
+std::mutex

@@ -5,9 +5,9 @@
 #include <sys/types.h>
 #include <vector>
 #include <poll.h>
+#include <mutex>
 #include <signal.h>
 #include "Epoll.h"
-#include "Mutex.h"
 
 class Handler;
 
@@ -26,7 +26,7 @@ private:
 	bool isLoop;
 	bool isQuit;
 	Epoll* e;
-	Mutex mutex;
+	std::mutex mtx;
 };
 
 #endif
