@@ -6,12 +6,29 @@
 #include "EventLoopThreadPool.h"
 
 int main(int argc, char** argv){
-	if(argc != 2){
-		std::cout << "Usage: " << argv[0] << " <port>" << std::endl;
+	if(argc > 5){
+		std::cout << "Usage: " << argv[0] << " [-t thread_numbers] [-p port]" << std::endl;
         return 0;
 	}
 
-	int port = std::atoi(argv[1]);
+	int threadNum = 4;
+	int port = 8088;
+	int opt;
+	const char* str = "t:p:";
+	while((opt = getopt(argc, argv, str)) != -1){
+		switch(opt){
+			case 't':{
+				threadNum = atoi(optarg);
+				break;
+			}
+			case 'p':{
+				port = atoi(optarg);
+				break;
+			}
+			default:
+				break;
+		}
+	}
 
 	int listenFd = Socket::CreateSocket();
 	Socket::setReuseAddr(listenFd, true);
@@ -22,8 +39,9 @@ int main(int argc, char** argv){
 	servAddr.sin_port = htons(port);
 	Socket::Bind(listenFd, servAddr);
 	Socket::Listen(listenFd);
-
-	EventLoopThreadPool* threadPool = new EventLoopThreadPool(5);
+	std::cout << "********Server listen on port: " << port << "********" << std::endl;
+	
+	EventLoopThreadPool* threadPool = new EventLoopThreadPool(threadNum);
 	while(true){
 		struct sockaddr_in clientAddr;
 		socklen_t clientAddrLen = sizeof(clientAddr);

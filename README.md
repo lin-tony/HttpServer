@@ -3,7 +3,7 @@ A simple HTTP static file server, which is written on C++11 language. Use Reacto
 
 # Usage
 - `$ make`
-- `$ ./HttpServer <port>`
+- `$ ./HttpServer [-t thread_numbers] [-p port]`
 - `$ make clean`
 
 # Detail

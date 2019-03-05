@@ -14,7 +14,7 @@ void Thread::start(){
 		std::cout << "Thread start error" << std::endl;
 		return;
 	}
-	std::cout << "Thread: " << syscall(SYS_gettid) << " created" << std::endl;
+	std::cout << "Thread: " << pthreadId << " created" << std::endl;
 }
 
 int Thread::join(){
