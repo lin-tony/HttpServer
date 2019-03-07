@@ -25,7 +25,7 @@ int main(int argc, char** argv){
 				port = atoi(optarg);
 				break;
 			}
-			default:
+			default: 
 				break;
 		}
 	}
@@ -35,11 +35,11 @@ int main(int argc, char** argv){
 	struct sockaddr_in servAddr;
 	memset(&servAddr, 0, sizeof(servAddr));
 	servAddr.sin_family = AF_INET;
-	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	servAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	servAddr.sin_port = htons(port);
 	Socket::Bind(listenFd, servAddr);
 	Socket::Listen(listenFd);
-	std::cout << "********Server listen on port: " << port << "********" << std::endl;
+	std::cout << "********Server listen on address: 127.0.0.1, on port: " << port << "********" << std::endl;
 	
 	EventLoopThreadPool* threadPool = new EventLoopThreadPool(threadNum);
 	while(true){

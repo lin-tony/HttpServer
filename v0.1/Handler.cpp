@@ -24,7 +24,7 @@ void Handler::handle(){
 	}
 	parseURI();
 
-	//æŸ¥çœ‹æ–‡ä»¶æ˜¯å¦å­˜åœ¨
+	//²é¿´ÎÄ¼şÊÇ·ñ´æÔÚ
 	struct stat fileInfo;
 	if(stat(_fileName.c_str(), &fileInfo) < 0){
 		std::cout << "404 Not Found" << std::endl;
@@ -32,7 +32,7 @@ void Handler::handle(){
 		return;
 	}
 
-	//æ£€æŸ¥æ–‡ä»¶ æ˜¯å¦æ˜¯ä¸€ä¸ªå¸¸è§„æ–‡ä»¶  æ˜¯å¦å¯è¯»
+	//¼ì²éÎÄ¼ş ÊÇ·ñÊÇÒ»¸ö³£¹æÎÄ¼ş  ÊÇ·ñ¿É¶Á
 	if(!(S_ISREG(fileInfo.st_mode)) || !(S_IRUSR & fileInfo.st_mode)){
 		std::cout << "403 Forbidden" << std::endl;
         sendErrorMsg("403", "Forbidden", "Couldn't read this file");

@@ -24,7 +24,7 @@ void Epoll::removeFd(const int fd){
 void Epoll::addToEpoll(const int fd){
 	epoll_event event;
 	event.data.fd = fd;
-	event.events = EPOLLIN | EPOLLET;//使用了ET模式，注意注入的套接字必须为非阻塞socket，否则读取完毕不会有EAGAIN错误让循环退出。
+	event.events = EPOLLIN | EPOLLET;//使用了ET模式，注意加入监听队列的套接字必须为非阻塞socket（Socket::setnonblock），否则读取完毕不会有EAGAIN错误让循环退出。
 	if(epoll_ctl(epollFd, EPOLL_CTL_ADD, fd, &event) < 0){
 		std::cout << "Epoll::addToEpoll error: " << strerror(errno) << std::endl;
 	}

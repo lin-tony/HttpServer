@@ -15,8 +15,8 @@ public:
 	//explicit 防止不应该允许的经过转换构造函数进行的隐式转换
 	explicit Epoll(EventLoop* loop)
 		:ownerLoop(loop),
-		//创建一个多路复用的实例, EPOLL_CLOEXEC表示生成的epoll fd具有“执行后关闭”特性
-		epollFd(epoll_create1(EPOLL_CLOEXEC)),
+		//创建一个多路复用的实例，参数在linux2.6之后已被忽略，但仍需要设置
+		epollFd(epoll_create(8)),
 		eventEpoll(8){
 		if(epollFd < 0){
 			std::cout << "Epoll::epoll_create1() error: " << ::strerror(errno) << std::endl;

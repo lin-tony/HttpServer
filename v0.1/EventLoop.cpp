@@ -1,14 +1,12 @@
 #include "EventLoop.h"
 
 EventLoop::EventLoop()
-	:isLoop(false),
-	 isQuit(false),
+	:isQuit(false),
 	 e(new Epoll(this)){
 
 }
 
 void EventLoop::loop(){
-	isLoop = true;
 	isQuit = false;
 	thread_id = static_cast<pid_t>(syscall(SYS_gettid));
 	while(!isQuit){
@@ -26,7 +24,6 @@ void EventLoop::loop(){
 			delete* i;
 		}
 	}
-	isLoop = false;
 }
 
 void EventLoop::quit(){

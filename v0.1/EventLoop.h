@@ -20,10 +20,8 @@ public:
 
 private:
 	void addToLoop();
-	bool isLooping();
 	pid_t thread_id;
 	std::vector<int> fds;
-	bool isLoop;
 	bool isQuit;
 	Epoll* e;
 	std::mutex mtx;

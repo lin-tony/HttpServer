@@ -21,13 +21,15 @@ public:
 	//开启TCP_NODELAY，禁用Nagle算法,允许小包发送
 	static void setTcpNoDelay(const int fd, bool on);
 
+	//O_NONBLOCK，非阻塞模式
+	static void setNonBlock(const int fd);
+
 	//socket基本操作
 	static int CreateSocket();
 	static void Bind(const int fd, const struct sockaddr_in &addr);
 	static void Listen(const int fd);
 	static int Accept(const int fd, struct sockaddr_in *addr);
 	static void Close(const int fd);
-	static void setNonBlock(const int fd);
 };
 
 #endif //SOCKET_H
