@@ -22,6 +22,22 @@ A simple HTTP static file server, which is written on C++11 language. Use Reacto
 |Handler| 控制处理HTTP请求并返回响应|
 |Mutex| 互斥锁|
 
+# 版本历史
+C++实现的高性能Http服务器。可解析响应get、head请求，可处理静态资源。
+## v0.1
+第一版是看了很多Github上的Http服务器，结合自己的理解写出来的。模型结构如下：
+- 使用Epoll边沿触发的IO多路复用技术，非阻塞IO，减少事件触发次数
+- 使用Reactor模式，满足高并发需求
+- 使用线程池实现多线程模块，减少系统资源开销
+- 解析了HTTP的get请求，还可处理静态资源。
+- 在将套接字加入epoll监听队列的操作上加了互斥锁
+
+## v0.2
+主要是运用C++11的知识
+- 将子线程全部由pthread改为std::thread。
+- 在互斥锁上用了std::lock_guard增加稳健性，线程获得锁并崩溃后会自动释放锁。
+
+
 
 # Reactor模式概述：
 - MainReactor只有一个，负责响应client的连接请求，并建立TCP连接。在建立连接后用轮转方式分配到某一个SubReactor的监听队列中，
@@ -30,6 +46,7 @@ A simple HTTP static file server, which is written on C++11 language. Use Reacto
 
 具体模型如图
 ![并发模型](https://github.com/lin-tony/HttpServer/blob/master/Reactor-model.png)
+
 
 
 # 关于epoll工作模式
@@ -48,3 +65,5 @@ epoll的触发模式使用了ET模式。ET模式每次读，必须读到不能�
 
 # C++11元素
 std::mutex
+std::lock_guard
+std::thread
