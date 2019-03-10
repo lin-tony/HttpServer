@@ -1,6 +1,14 @@
 # HttpServer
 A simple HTTP static file server, which is written on C++11 language. Use Reactor model.
 
+# Technical points
+
+1. 使用Reactor模式，满足高并发需求
+2. 使用Epoll边沿触发的IO多路复用技术，非阻塞IO，减少事件触发次数
+3. 使用线程池实现多线程模块，充分利用多核CPU，避免线程频繁创建销毁的开销 
+4. 主线程只负责accept请求，返回后轮转分发给线程池中子线程处理，锁的争用只会出现在主线程和某一线程中
+
+
 # Usage
 - `$ make`
 - `$ ./HttpServer [-t thread_numbers] [-p port]`
@@ -22,22 +30,6 @@ A simple HTTP static file server, which is written on C++11 language. Use Reacto
 |Handler| 控制处理HTTP请求并返回响应|
 |Mutex| 互斥锁|
 
-# 版本历史
-C++实现的高性能Http服务器。可解析响应get、head请求，可处理静态资源。
-## v0.1
-第一版是看了很多Github上的Http服务器，结合自己的理解写出来的。模型结构如下：
-- 使用Epoll边沿触发的IO多路复用技术，非阻塞IO，减少事件触发次数
-- 使用Reactor模式，满足高并发需求
-- 使用线程池实现多线程模块，减少系统资源开销
-- 解析了HTTP的get请求，还可处理静态资源。
-- 在将套接字加入epoll监听队列的操作上加了互斥锁
-
-## v0.2
-主要是运用C++11的知识
-- 将子线程全部由pthread改为std::thread。
-- 在互斥锁上用了std::lock_guard增加稳健性，线程获得锁并崩溃后会自动释放锁。
-
-
 
 # Reactor模式概述：
 - MainReactor只有一个，负责响应client的连接请求，并建立TCP连接。在建立连接后用轮转方式分配到某一个SubReactor的监听队列中，
@@ -55,10 +47,27 @@ epoll的触发模式使用了ET模式。ET模式每次读，必须读到不能�
 此项目只是使用Http短连接，读取请求和返回响应后便关闭了套接字，不会有第二次触发，所以ET模式在此项目和LT并无差别，仅当练手。
 
 
+# 版本历史
+C++实现的高性能Http服务器。可解析响应get、head请求，可处理静态资源。
+## v0.1
+第一版是看了很多Github上的Http服务器，结合自己的理解写出来的。模型结构如下：
+- 使用Epoll边沿触发的IO多路复用技术，非阻塞IO，减少事件触发次数
+- 使用Reactor模式，满足高并发需求
+- 使用线程池实现多线程模块，减少系统资源开销
+- 解析了HTTP的get请求，还可处理静态资源。
+- 在将套接字加入epoll监听队列的操作上加了互斥锁
+
+## v0.2
+主要是运用C++11的知识
+- 将子线程全部由pthread改为std::thread。
+- 在互斥锁上用了std::lock_guard增加稳健性，线程获得锁并崩溃后会自动释放锁。
+
+
+
 # To do list
 - <del>将LT改为ET模式</del>（完成，更新了Buffer::readFd和Epoll::addToEpoll，此前已在Socket::Accept中用了setNonBlock(设置非阻塞)）
 - <del>增加condition和mutex</del>（更新EventLoop类，在主线程将连接好的套接字加入到子线程等待队列中时加锁 和 子线程将等待队列中的套接字加入到监听队列中）
-- C++11线程池改造
+- C++11线程池改造(使用了std::thread，还没完工)
 - 处理head请求
 - 压力测试
 - 将Http改为长连接，以测试ET模式的性能
