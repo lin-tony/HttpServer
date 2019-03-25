@@ -76,8 +76,36 @@ C++实现的高性能Http服务器。可解析响应get、head请求，可处理
 - 增加基于连接状态的socket调度，主动释放超时连接
 - 静态文件路径检测
 - 增加其他安全措施
+- 解决大文件的解析（135K的图片在本地可以完美解析，但是放到1Mbps的云服务器上再访问永远只能显示一半，write非阻塞的处理已经没有问题了）
 
 # C++11元素
 std::mutex
 std::lock_guard
 std::thread
+
+
+# 压力测试
+### V1.0 使用http_load
+参考https://www.cnblogs.com/cqingt/p/6043126.html
+
+从下面的结论可以知道：
+运行了4935个请求，最大的并发进程数是81，总计传输的数据是1.96373e+06bytes，运行了60.0228秒
+每一连接平均传输的数据量397.919bytes
+每秒的响应请求为82.2187个，每秒传递的数据为32716.4 bytes
+每连接的平均响应时间是157.371 毫秒，最大的响应时间15511.6 毫秒，最小的响应时间19.714 毫秒
+
+以上测试服务器使用了20个线程，还发现accept返回的fd是从1自增的，总体来说基本性能还是OK的，但是还没到高并发的程度，因为测试工具不是太给力（因为只要大量的请求没有返回，进程会缓冲区溢出）。
+总体上还是没有达到我想要的效果，下次试试别的工具。
+
+```shell
+$ http_load -s 60 -r 1000 url.txt 
+
+4935 fetches, 81 max parallel, 1.96373e+06 bytes, in 60.0228 seconds
+397.919 mean bytes/connection
+82.2187 fetches/sec, 32716.4 bytes/sec
+msecs/connect: 157.371 mean, 15511.6 max, 19.714 min
+msecs/first-response: 28.867 mean, 314.236 max, 18.753 min
+1 bad byte counts
+HTTP response codes:
+  code 200 -- 4934
+```

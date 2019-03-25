@@ -94,3 +94,55 @@ void Buffer::sendFd(const int fd){
 	}
 	resetBuffer();
 }
+
+void Buffer::readFileAndWrite(const int fromFd, const int toFd){
+	int nread, nsend;
+
+	/*//本来还想根据文件大小计算，得知read文件尾直接返回0便不需要了
+	struct stat stbuf;
+	if ((fstat(fromFd, &stbuf) != 0) || (!S_ISREG(stbuf.st_mode))) {
+		  return;
+	}
+	off_t file_size;
+    file_size = stbuf.st_size;
+	*/
+	char supportBuf[655350];
+	char* ptr;
+	while(true){
+		ptr = supportBuf;
+		//读文件
+		nread = read(fromFd, ptr, 655350);
+		//std::cout<<" nread bytes:"<<nread <<std::endl;
+		if (nread < 0){
+            if (errno == EINTR){
+                nread = 0;
+            } else{
+                break;
+            }  
+        }
+        if (nread == 0)//读取完成
+            break;
+
+		//写进套接字
+        int readableCount = nread;
+        while(readableCount){
+			if((nsend = write(toFd,ptr,readableCount)) < 0){
+				if(errno == EINTR){
+					nsend = 0;
+				} else if(errno=EAGAIN){
+
+					struct timeval delay;
+					delay.tv_sec =0;
+					delay.tv_usec =20 * 1000; // 20 ms
+					select(0, NULL,NULL, NULL, &delay);
+					
+				} else
+					return;
+			}
+			readableCount -= nsend;
+			ptr += nsend;
+			//std::cout<<" send bytes:"<<nsend <<std::endl;
+		}
+		
+	}
+}

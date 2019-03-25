@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <unistd.h>
+#include <iostream>
 
 class Buffer{
 public:
@@ -16,6 +17,7 @@ public:
 	char* getDataIndex();
 	size_t readFd(const int fd);
 	void sendFd(const int fd);
+	void readFileAndWrite(const int fromFd, const int toFd);
 
 private:
 	void resetBuffer();

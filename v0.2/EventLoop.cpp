@@ -10,7 +10,7 @@ void EventLoop::loop(){
 	isQuit = false;
 	thread_id = static_cast<pid_t>(syscall(SYS_gettid));
 	while(!isQuit){
-		std::cout << "--------Thread: " << thread_id << " Looping" << std::endl;
+		//std::cout << "--------Thread: " << thread_id << " Looping" << std::endl;
 		addToLoop();
 		std::vector<Handler*> activeEvents;
 		activeEvents.clear();
@@ -40,7 +40,7 @@ void EventLoop::addToLoop(const int fd){
 void EventLoop::addToLoop(){
 	std::lock_guard<std::mutex> lockGuard(mtx);
 	if(fds.empty()){
-		std::cout <<  "Thread: " << thread_id << " fds empty." << std::endl;
+		//std::cout <<  "Thread: " << thread_id << " fds empty." << std::endl;
 	}else{
 		for(int i = 0; i < fds.size(); ++i){
 			e->addToEpoll(fds[i]);

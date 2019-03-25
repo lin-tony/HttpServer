@@ -16,7 +16,7 @@ void Parse::parseLine(){
 	std::string::size_type checkIndex = 0;
 
 	while(checkIndex < _request.size()){
-		if(_request[checkIndex] == '\r'){Request
+		if(_request[checkIndex] == '\r'){
 			if((checkIndex + 1) == _request.size()){//因为最后一个字符是\n，所以必定错误
 				std::cout << "Parse::parseLine error.  can not read complete." << std::endl;
 				return;
