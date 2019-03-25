@@ -11,7 +11,7 @@ int main(int argc, char** argv){
         return 0;
 	}
 
-	int threadNum = 5;
+	int threadNum = 4;
 	int port = 8088;
 	int opt;
 	const char* str = "t:p:";

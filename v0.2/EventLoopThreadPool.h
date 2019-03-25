@@ -4,8 +4,6 @@
 #include <vector>
 #include "EventLoopThread.h"
 
-class EventLoop;
-
 class EventLoopThreadPool{
 public:
 	EventLoopThreadPool(const int threadNum);
@@ -15,7 +13,6 @@ public:
 private:
 	int _threadNum;
 	int _nextId;
-	EventLoop* _baseLoop;
 	std::vector<EventLoopThread*> _threads;
 };
 

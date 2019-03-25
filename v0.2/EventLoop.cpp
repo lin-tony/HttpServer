@@ -18,7 +18,7 @@ void EventLoop::loop(){
 		e->epoll(activeEvents);
 		for(std::vector<Handler*>::iterator i = activeEvents.begin();
 			i != activeEvents.end(); ++i){
-			std::cout << "-----------Handler Request!" << std::endl;
+			std::cout << "-----------Handle Request!" << std::endl;
 			(*i)->handle();
 			e->removeFd((*i)->connFd());
 			delete* i;

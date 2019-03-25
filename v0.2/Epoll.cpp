@@ -2,7 +2,7 @@
 
 void Epoll::epoll(std::vector<Handler*> &activeEvents){
 	int numEvents = epoll_wait(epollFd, eventEpoll.data(), 
-							static_cast<int>(eventEpoll.size()), 1000);
+							static_cast<int>(eventEpoll.size()), 1);
 
 	if(numEvents < 0){
 		if(errno != EINTR){

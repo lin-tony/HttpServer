@@ -40,7 +40,7 @@ void Handler::handle(){
 	}
 
 	getFileType();
-	std::string msg = "HTTP/1.1 200 OK\r\n";
+	std::string msg = "HTTP/1.0 200 OK\r\n";
 	msg += "Server: Web Server\r\n";
 	msg += "Content-type:" + _fileType + "\r\n\r\n";
 	_outputBuffer.append(msg.c_str(), msg.size());

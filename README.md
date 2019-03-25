@@ -34,7 +34,7 @@ A simple HTTP static file server, which is written on C++11 language. Use Reacto
 # Reactor模式概述：
 - MainReactor只有一个，负责响应client的连接请求，并建立TCP连接。在建立连接后用轮转方式分配到某一个SubReactor的监听队列中，
 - SubReactor有多个，每个subReactor都会在一个独立线程中运行，并且维护一个独立的NIO Selector。
-- 当主线程把新连接分配给了某个SubReactor，该线程此时可能正阻塞在多路选择器(epoll)的等待中，线程每隔1000ms会从epoll_wait中醒来，得到所有活跃事件，进行处理。
+- 当主线程把新连接分配给了某个SubReactor，该线程此时可能正阻塞在多路选择器(epoll)的等待中，线程最多每隔1000ms会从epoll_wait中醒来，得到所有活跃事件，进行处理。
 
 具体模型如图
 ![并发模型](https://github.com/lin-tony/HttpServer/blob/master/Reactor-model.png)
@@ -59,8 +59,9 @@ C++实现的高性能Http服务器。可解析响应get、head请求，可处理
 
 ## v0.2
 主要是运用C++11的知识
-- 将子线程全部由pthread改为std::thread。
-- 在互斥锁上用了std::lock_guard增加稳健性，线程获得锁并崩溃后会自动释放锁。
+- 将子线程全部由pthread改为std::thread
+- 在互斥锁上用了std::lock_guard增加稳健性，线程获得锁并崩溃后会自动释放锁，然而崩溃后整个进程会结束
+- 已将epoll_wait()改为1ms阻塞，经测试在一核无连接的情况下开200线程占用50%cpu，user和system各占一半
 
 
 
@@ -71,6 +72,7 @@ C++实现的高性能Http服务器。可解析响应get、head请求，可处理
 - 处理head请求
 - 压力测试
 - 将Http改为长连接，以测试ET模式的性能
+- 挂上服务器（要先弄个路径访问限制先）
 
 # C++11元素
 std::mutex

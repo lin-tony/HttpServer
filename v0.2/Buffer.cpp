@@ -59,7 +59,7 @@ size_t Buffer::readFd(const int fd){
         if (nread < 0){
             if (errno == EINTR)
                 nread = 0;
-            else if (errno == EAGAIN){
+            else if (errno == EAGAIN){//读取完成！
                 return readCount;
             }
             else{
