@@ -83,6 +83,10 @@ bool Handler::receiveRequest(){
 	std::cout << "------------Get Request----------" << std::endl;
 	std::cout << request << std::endl;
 	std::cout << "------------End of Request-------" << std::endl;
+
+	if(request.find("\r\n\r\n") == std::string::npos)//直接丢掉没有正常结束的请求
+		return false;
+
 	Parse p(request);
 	_request = p.getParseResult();
 	return true;
