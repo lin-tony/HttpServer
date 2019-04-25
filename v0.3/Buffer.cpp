@@ -1,55 +1,55 @@
-#include "Buffer.h"
+#include "buffer.h"
 
-Buffer::Buffer(): _readIndex(0), _writeIndex(0) {
+Buffer::Buffer(): readIndex_(0), writeIndex_(0) {
 	//捕获SIGPIPE信号, 给它设置SIG_IGN信号处理函数：对端已经关闭.errno置为SIGPIPE
 	signal(SIGPIPE, SIG_IGN);
 }
 
-size_t Buffer::readableBytes(){
-	return _writeIndex - _readIndex;
+size_t Buffer::ReadableBytes(){
+	return writeIndex_ - readIndex_;
 }
 
-size_t Buffer::writeableBytes(){
-	return _buffer.size() - _writeIndex;
+size_t Buffer::WriteableBytes(){
+	return buffer_.size() - writeIndex_;
 }
 
-std::string Buffer::readAllAsString(){
-	std::string str(&*_buffer.begin() + _readIndex, readableBytes());
-	resetBuffer();
+std::string Buffer::ReadAllAsString(){
+	std::string str(&*buffer_.begin() + readIndex_, ReadableBytes());
+	ResetBuffer();
 	return str;
 }
 
-void Buffer::append(const char* data, const size_t len){
-	makeSpace(len);
-	std::copy(data, data+len, beginWrite());
-	_writeIndex += len;
+void Buffer::Append(const char* data, const size_t len){
+	MakeSpace(len);
+	std::copy(data, data+len, BeginWrite());
+	writeIndex_ += len;
 }
 
-char* Buffer::getDataIndex(){
-	return static_cast<char*>(&*_buffer.begin()) + _readIndex;
+char* Buffer::GetDataIndex(){
+	return static_cast<char*>(&*buffer_.begin()) + readIndex_;
 }
 
-void Buffer::resetBuffer(){
-	_readIndex = _writeIndex = 0;
-	_buffer.clear();
-	_buffer.shrink_to_fit();
+void Buffer::ResetBuffer(){
+	readIndex_ = writeIndex_ = 0;
+	buffer_.clear();
+	buffer_.shrink_to_fit();
 }
 
-void Buffer::makeSpace(const size_t len){
-	if(writeableBytes() < len){
-		_buffer.resize(_writeIndex + len);
+void Buffer::MakeSpace(const size_t len){
+	if(WriteableBytes() < len){
+		buffer_.resize(writeIndex_ + len);
 	}
 }
 
-char* Buffer::beginWrite(){
-	return &*_buffer.begin() + _writeIndex;
+char* Buffer::BeginWrite(){
+	return &*buffer_.begin() + writeIndex_;
 }
 
-const char* Buffer::getBegin() const{
-	return &*_buffer.begin();
+const char* Buffer::GetBegin() const{
+	return &*buffer_.begin();
 }
 
-size_t Buffer::readFd(const int fd){
+size_t Buffer::ReadFd(const int fd){
 
 	char supportBuf[65535];
 	char* ptr = supportBuf;
@@ -74,17 +74,17 @@ size_t Buffer::readFd(const int fd){
 
         nleft -= nread;
         readCount += nread;
-		append(ptr, nread);//只将新增的写入
+		Append(ptr, nread);//只将新增的写入
 
         ptr += nread;
     }
 	return readCount;
 }
 
-void Buffer::sendFd(const int fd){
+void Buffer::SendFd(const int fd){
 	size_t bytesSent;
-	size_t readableCount = readableBytes();
-	char* ptr = getDataIndex();
+	size_t readableCount = ReadableBytes();
+	char* ptr = GetDataIndex();
 	while(readableCount){
 		if((bytesSent = write(fd,ptr,readableCount)) < 0){
 			if(bytesSent < 0 && errno == EINTR)
@@ -95,10 +95,10 @@ void Buffer::sendFd(const int fd){
 		readableCount -= bytesSent;
 		ptr += bytesSent;
 	}
-	resetBuffer();
+	ResetBuffer();
 }
 
-void Buffer::readFileAndWrite(const int fromFd, const int toFd){
+void Buffer::ReadFileAndWriteBack(const int fromFd, const int toFd){
 	int nread, nsend;
 
 	/*//本来还想根据文件大小计算，得知read文件尾直接返回0便不需要了

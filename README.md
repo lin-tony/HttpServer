@@ -1,6 +1,14 @@
 # HttpServer
 A simple HTTP static file server, which is written on C++11 language. Use Reactor model.
 
+#索引
+- [Usage](#Usage)
+- [Detail](#Detail)
+- [Reactor模式概述](#Reactor模式概述)
+- [版本历史](#版本历史)
+- [压力测试](#压力测试)
+
+
 # Technical points
 
 1. 使用Reactor模式，满足高并发需求
@@ -49,6 +57,8 @@ epoll的触发模式使用了ET模式。ET模式每次读，必须读到不能�
 
 # 版本历史
 C++实现的高性能Http服务器。可解析响应get、head请求，可处理静态资源。
+
+
 ## v0.1
 第一版是看了很多Github上的Http服务器，结合自己的理解写出来的。模型结构如下：
 - 使用Epoll边沿触发的IO多路复用技术，非阻塞IO，减少事件触发次数
@@ -66,20 +76,9 @@ C++实现的高性能Http服务器。可解析响应get、head请求，可处理
 ## v0.3
 - 增加程序的健壮性，改进了Buffer类，增加 捕获SIGPIPE 和 write缓冲区满时，阻塞等待write释放 的功能。
 - 测试了程序性能
+- 根据Google C++命名规范修改所有命名https://www.cnblogs.com/chensheng-zhou/p/5127415.html 原文是https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/
 
 
-# To do list
-- <del>将LT改为ET模式</del>（完成，更新了Buffer::readFd和Epoll::addToEpoll，此前已在Socket::Accept中用了setNonBlock(设置非阻塞)）
-- <del>增加condition和mutex</del>（更新EventLoop类，在主线程将连接好的套接字加入到子线程等待队列中时加锁 和 子线程将等待队列中的套接字加入到监听队列中）
-- C++11线程池改造(使用了std::thread，还没完工)
-- 处理head请求
-- 压力测试
-- 将Http改为长连接，以测试ET模式的性能
-- 挂上服务器（要先弄个路径访问限制先）
-- 增加基于连接状态的socket调度，主动释放超时连接
-- 静态文件路径检测
-- 增加其他安全措施
-- 解决大文件的解析（135K的图片在本地可以完美解析，但是放到1Mbps的云服务器上再访问永远只能显示一半，write非阻塞的处理已经没有问题了）
 
 
 # 压力测试
@@ -132,7 +131,7 @@ __测试环境__
 - OS：Ubuntu 16.04
 - 内存：2G
 - CPU：I5-7300HQ
-- 单机虚拟机，4核，Http服务器子线程数8.
+- 虚拟机，4核，Http服务器子线程数8.
 
 从下面的输出可以知道：
 测试进程并发进程数是3000，跑了20秒，
@@ -163,3 +162,20 @@ __总结__
 std::mutex
 std::lock_guard
 std::thread
+
+# To do list
+- <del>将LT改为ET模式</del>（完成，更新了Buffer::readFd和Epoll::addToEpoll，此前已在Socket::Accept中用了setNonBlock(设置非阻塞)）
+- <del>增加condition和mutex</del>（更新EventLoop类，在主线程将连接好的套接字加入到子线程等待队列中时加锁 和 子线程将等待队列中的套接字加入到监听队列中）
+- C++11线程池改造(使用了std::thread，还没完工)
+- 处理head请求
+- 压力测试
+- 将Http改为长连接，以测试ET模式的性能
+- 增加基于连接状态的socket调度，主动释放超时连接
+- 静态文件路径检测
+- 增加其他安全措施
+- 解决大文件的解析
+
+
+__未能解决的Bug__
+135K的图片在本地可以完美解析，但是放到1Mbps的云服务器上再访问永远只能显示一半，
+用WINHEX查看文件，发现乱序了，不同次请求的乱序不一样，然而明显socket封装了底层的tcp流传输啊，我只有write可以调用。

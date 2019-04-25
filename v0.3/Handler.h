@@ -9,32 +9,32 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "Parse.h"
-#include "Buffer.h"
+#include "parse.h"
+#include "buffer.h"
 
 class Handler{
 public:
 	Handler(const int fd);
 	~Handler();
-	void handle();
-	const int connFd() const{
-		return _connFd;
+	void HandleRequest();
+	const int get_connect_fd() const{
+		return connect_fd_;
 	}
 
 private:
-	bool receiveRequest();
-	void sendResponse();
-	void sendErrorMsg(const std::string&, const std::string&, const std::string&);
-	void parseURI();
-	void getFileType();
+	bool ReceiveRequest();
+	void SendResponse();
+	void SendErrorMsg(const std::string&, const std::string&, const std::string&);
+	void ParseURI();
+	void GetFileType();
 	
-	int _connFd;
-	bool _isClosed;
-	std::string _fileType;
-	std::string _fileName;
-	Buffer _inputBuffer;
-	Buffer _outputBuffer;
-	HttpRequest _request;
+	int connect_fd_;
+	bool is_close_;
+	std::string file_type_;
+	std::string fileName_;
+	Buffer input_buffer_;
+	Buffer output_buffer_;
+	HttpRequest request_;
 };
 
 #endif

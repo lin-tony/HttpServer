@@ -19,15 +19,15 @@ struct HttpRequest{
 class Parse{
 public:
 	Parse(const std::string request);
-	HttpRequest getParseResult();
+	HttpRequest GetParseResult();
 private:
-	void parseLine();
-	void parseRequestLine();
-	void parseHeaders();
+	void ParseLine();
+	void ParseRequestLine();
+	void ParseHeaders();
 
-	std::string _request;
-	std::vector<std::string> _line;
-	HttpRequest _parseResult;
+	std::string request_;
+	std::vector<std::string> line_;
+	HttpRequest parse_result_;
 };
 
 

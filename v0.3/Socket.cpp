@@ -1,4 +1,4 @@
-#include "Socket.h"
+#include "socket.h"
 
 int Socket::CreateSocket(){
 	int fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -28,8 +28,8 @@ int Socket::Accept(const int fd, struct sockaddr_in *addr){
 	int connFd = accept(fd, (struct sockaddr*)(&addr), &addrLen);
 	std::cout << "Accept: " << connFd<< std::endl;
 	//将连接好的套接字设为非阻塞和禁用nagle算法
-	setTcpNoDelay(connFd, true);
-	setNonBlock(connFd);
+	SetTcpNoDelay(connFd, true);
+	SetNonBlock(connFd);
 
 	if(connFd < 0){
 		switch(errno){
@@ -56,7 +56,7 @@ int Socket::Accept(const int fd, struct sockaddr_in *addr){
 	return connFd;
 }
 
-void Socket::setNonBlock(const int fd){
+void Socket::SetNonBlock(const int fd){
 	int flag;
 	if((flag = fcntl(fd, F_GETFL, 0)) < 0){
 		std::cout << "Socket::setNonBlock error: " <<strerror(errno) << std::endl;
@@ -69,12 +69,12 @@ void Socket::setNonBlock(const int fd){
 	}
 }
 
-void Socket::setReuseAddr(const int fd, bool on){
+void Socket::SetReuseAddr(const int fd, bool on){
 	int flag = on ? 1 : 0;
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
 }
 
-void Socket::setTcpNoDelay(const int fd, bool on){
+void Socket::SetTcpNoDelay(const int fd, bool on){
 	int flag = on ? 1 : 0;
 	setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(flag));
 }

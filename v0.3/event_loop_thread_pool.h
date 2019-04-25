@@ -2,18 +2,18 @@
 #define EVENTLOOPTHREADLOOP_H
 
 #include <vector>
-#include "EventLoopThread.h"
+#include "event_loop_thread.h"
 
 class EventLoopThreadPool{
 public:
 	EventLoopThreadPool(const int threadNum);
 	~EventLoopThreadPool();
-	EventLoopThread* getNextThread();
+	EventLoopThread* GetNextThread();
 
 private:
-	int _threadNum;
-	int _nextId;
-	std::vector<EventLoopThread*> _threads;
+	int threadNum_;
+	int nextId_;
+	std::vector<EventLoopThread*> thread_vector_;
 };
 
 #endif

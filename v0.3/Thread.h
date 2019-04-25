@@ -10,22 +10,22 @@ class Thread{
 public:
 	typedef void* (*ThreadFunc)(void*);
 	explicit Thread(ThreadFunc func, void* arg)
-		:started(false),
-		 joined(false),
-		 _arg(arg),
-		 threadFunc(func){
+		:start_(false),
+		 join_(false),
+		 arg_(arg),
+		 thread_func_(func){
 	}
 
 	~Thread();
-	void start();
-	void join();
+	void Start();
+	void Join();
 
 private:
-	bool started;
-	bool joined;
-	void* _arg;
-	std::thread threadId;
-	ThreadFunc threadFunc;
+	bool start_;
+	bool join_;
+	void* arg_;
+	std::thread thread_id_;
+	ThreadFunc thread_func_;
 };
 
 #endif

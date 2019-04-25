@@ -7,24 +7,24 @@
 #include <poll.h>
 #include <mutex>
 #include <signal.h>
-#include "Epoll.h"
+#include "epoll.h"
 
 class Handler;
 
 class EventLoop{
 public:
 	EventLoop();
-	void loop();
-	void quit();
-	void addToLoop(const int fd);
+	void Loop();
+	void Quit();
+	void AddToFdVector(const int fd);
 
 private:
-	void addToLoop();
-	pid_t thread_id;
-	std::vector<int> fds;
-	bool isQuit;
-	Epoll* e;
-	std::mutex mtx;
+	void AddToEpoll();
+	pid_t thread_id_;
+	std::vector<int> fd_vector_;
+	bool is_quit_;
+	Epoll* epoll_;
+	std::mutex mutex_;
 };
 
 #endif

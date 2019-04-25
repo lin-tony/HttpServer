@@ -11,23 +11,23 @@
 class Buffer{
 public:
 	Buffer();
-	size_t readableBytes();
-	size_t writeableBytes();
-	std::string readAllAsString();
-	void append(const char* data, const size_t len);
-	char* getDataIndex();
-	size_t readFd(const int fd);
-	void sendFd(const int fd);
-	void readFileAndWrite(const int fromFd, const int toFd);
+	size_t ReadableBytes();
+	size_t WriteableBytes();
+	std::string ReadAllAsString();
+	void Append(const char* data, const size_t len);
+	char* GetDataIndex();
+	size_t ReadFd(const int fd);
+	void SendFd(const int fd);
+	void ReadFileAndWriteBack(const int from_fd, const int to_fd);
 
 private:
-	void resetBuffer();
-	void makeSpace(const size_t len);
-	const char* getBegin() const;
-	char* beginWrite();
+	void ResetBuffer();
+	void MakeSpace(const size_t len);
+	const char* GetBegin() const;
+	char* BeginWrite();
 
-	std::vector<char> _buffer;
-	size_t _readIndex, _writeIndex;
+	std::vector<char> buffer_;
+	size_t readIndex_, writeIndex_;
 };
 
 #endif

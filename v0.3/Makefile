@@ -1,35 +1,35 @@
-HttpServer: HttpServer.o Socket.o EventLoopThreadPool.o EventLoopThread.o Thread.o EventLoop.o Parse.o Handler.o Epoll.o Buffer.o
-	g++ -std=c++11 -pthread -o HttpServer HttpServer.o Socket.o EventLoopThreadPool.o EventLoopThread.o Thread.o EventLoop.o Parse.o Handler.o Epoll.o Buffer.o
+http_server: http_server.o socket.o event_loop_thread_pool.o event_loop_thread.o thread.o event_loop.o parse.o handler.o epoll.o buffer.o
+	g++ -std=c++11 -pthread -o http_server http_server.o socket.o event_loop_thread_pool.o event_loop_thread.o thread.o event_loop.o parse.o handler.o epoll.o buffer.o
 
-HttpServer.o: HttpServer.cpp Socket.h EventLoopThreadPool.h EventLoopThread.h EventLoop.h
-	g++ -std=c++11 -c -pthread HttpServer.cpp EventLoopThreadPool.cpp EventLoopThread.cpp EventLoop.cpp
+http_server.o: http_server.cpp socket.h event_loop_thread_pool.h event_loop_thread.h event_loop.h
+	g++ -std=c++11 -c -pthread http_server.cpp event_loop_thread_pool.cpp event_loop_thread.cpp event_loop.cpp
 
-Socket.o: Socket.cpp Socket.h 
-	g++ -std=c++11 -c -pthread Socket.cpp
+socket.o: socket.cpp socket.h 
+	g++ -std=c++11 -c -pthread socket.cpp
 
-EventLoopThreadPool.o: EventLoopThreadPool.cpp EventLoopThread.h 
-	g++ -std=c++11 -c -pthread EventLoopThreadPool.cpp EventLoopThread.cpp
+event_loop_thread_pool.o: event_loop_thread_pool.cpp event_loop_thread.h 
+	g++ -std=c++11 -c -pthread event_loop_thread_pool.cpp event_loop_thread.cpp
 
-EventLoopThread.o: EventLoopThread.cpp EventLoopThread.h EventLoop.h Thread.h 
-	g++ -std=c++11 -c -pthread EventLoopThread.cpp EventLoop.cpp Thread.cpp
+event_loop_thread.o: event_loop_thread.cpp event_loop_thread.h event_loop.h thread.h 
+	g++ -std=c++11 -c -pthread event_loop_thread.cpp event_loop.cpp thread.cpp
 
-Thread.o: Thread.cpp Thread.h 
-	g++ -std=c++11 -c -pthread Thread.cpp
+thread.o: thread.cpp thread.h 
+	g++ -std=c++11 -c -pthread thread.cpp
 
-EventLoop.o: EventLoop.cpp EventLoop.h Epoll.h 
-	g++ -std=c++11 -c EventLoop.cpp Epoll.cpp
+event_loop.o: event_loop.cpp event_loop.h epoll.h 
+	g++ -std=c++11 -c event_loop.cpp epoll.cpp
 
-Parse.o: Parse.cpp Parse.h 
-	g++ -std=c++11 -c Parse.cpp
+parse.o: parse.cpp parse.h 
+	g++ -std=c++11 -c parse.cpp
 
-Handler.o: Handler.cpp Handler.h Parse.h 
-	g++ -std=c++11 -c Handler.cpp Parse.cpp
+handler.o: handler.cpp handler.h parse.h 
+	g++ -std=c++11 -c handler.cpp parse.cpp
 
-Epoll.o: Handler.cpp Handler.h Parse.h Epoll.h 
-	g++ -std=c++11 -c Epoll.cpp Handler.cpp Parse.cpp
+epoll.o: handler.cpp handler.h parse.h epoll.h 
+	g++ -std=c++11 -c epoll.cpp handler.cpp parse.cpp
 
-Buffer.o: Buffer.cpp Buffer.h 
-	g++ -std=c++11 -c Buffer.cpp
+buffer.o: buffer.cpp buffer.h 
+	g++ -std=c++11 -c buffer.cpp
 
 clean:
-	rm *.o HttpServer
+	rm *.o http_server
