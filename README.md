@@ -1,7 +1,7 @@
 # HttpServer
 A simple HTTP static file server, which is written on C++11 language. Use Reactor model.
 
-#索引
+# 索引
 - [Usage](#Usage)
 - [Detail](#Detail)
 - [Reactor模式概述](#Reactor模式概述)
@@ -76,7 +76,7 @@ C++实现的高性能Http服务器。可解析响应get、head请求，可处理
 ## v0.3
 - 增加程序的健壮性，改进了Buffer类，增加 捕获SIGPIPE 和 write缓冲区满时，阻塞等待write释放 的功能。
 - 测试了程序性能
-- 根据Google C++命名规范修改所有命名https://www.cnblogs.com/chensheng-zhou/p/5127415.html 原文是https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/
+- 根据Google C++命名规范修改所有命名，文档https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/ ，参考了https://www.cnblogs.com/chensheng-zhou/p/5127415.html  
 
 
 
@@ -166,6 +166,7 @@ std::thread
 # To do list
 - <del>将LT改为ET模式</del>（完成，更新了Buffer::readFd和Epoll::addToEpoll，此前已在Socket::Accept中用了setNonBlock(设置非阻塞)）
 - <del>增加condition和mutex</del>（更新EventLoop类，在主线程将连接好的套接字加入到子线程等待队列中时加锁 和 子线程将等待队列中的套接字加入到监听队列中）
+- <del>挂上云服务器</del>
 - C++11线程池改造(使用了std::thread，还没完工)
 - 处理head请求
 - 压力测试
@@ -176,6 +177,8 @@ std::thread
 - 解决大文件的解析
 
 
+
 __未能解决的Bug__
+
 135K的图片在本地可以完美解析，但是放到1Mbps的云服务器上再访问永远只能显示一半，
 用WINHEX查看文件，发现乱序了，不同次请求的乱序不一样，然而明显socket封装了底层的tcp流传输啊，我只有write可以调用。
