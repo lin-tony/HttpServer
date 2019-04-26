@@ -11,6 +11,7 @@
 class Buffer{
 public:
 	Buffer();
+	~Buffer();
 	size_t ReadableBytes();
 	size_t WriteableBytes();
 	std::string ReadAllAsString();

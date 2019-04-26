@@ -77,7 +77,7 @@ C++实现的高性能Http服务器。可解析响应get、head请求，可处理
 - 增加程序的健壮性，改进了Buffer类，增加 捕获SIGPIPE 和 write缓冲区满时，阻塞等待write释放 的功能。
 - 测试了程序性能
 - 根据Google C++命名规范修改所有命名，文档https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/ ，参考了https://www.cnblogs.com/chensheng-zhou/p/5127415.html  
-
+- 增加异常处理机制
 
 
 

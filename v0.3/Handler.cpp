@@ -30,7 +30,6 @@ void Handler::HandleRequest(){
 		return;
 	}
 	ParseURI();
-
 	//查看文件是否存在
 	struct stat file_info;
 	if(stat(fileName_.c_str(), &file_info) < 0){

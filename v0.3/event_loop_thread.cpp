@@ -2,8 +2,7 @@
 
 EventLoopThread::EventLoopThread()
 	:event_loop_(new EventLoop()),
-	 thread_(ThreadFunc, event_loop_)
-{
+	 thread_(ThreadFunc, event_loop_){
 	thread_.Start();
 }
 

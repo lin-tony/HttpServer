@@ -9,7 +9,8 @@ public:
 	EventLoopThreadPool(const int threadNum);
 	~EventLoopThreadPool();
 	EventLoopThread* GetNextThread();
-
+	bool Init();
+	
 private:
 	int threadNum_;
 	int nextId_;

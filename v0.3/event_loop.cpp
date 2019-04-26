@@ -3,7 +3,6 @@
 EventLoop::EventLoop()
 	:is_quit_(false),
 	 epoll_(new Epoll()){
-
 }
 
 void EventLoop::Loop(){

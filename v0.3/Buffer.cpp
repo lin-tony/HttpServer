@@ -1,8 +1,13 @@
 #include "buffer.h"
 
-Buffer::Buffer(): readIndex_(0), writeIndex_(0) {
+Buffer::Buffer(): readIndex_(0), writeIndex_(0){
 	//捕获SIGPIPE信号, 给它设置SIG_IGN信号处理函数：对端已经关闭.errno置为SIGPIPE
 	signal(SIGPIPE, SIG_IGN);
+}
+
+Buffer::~Buffer(){
+	std::vector<char> tmp;
+	buffer_.swap(tmp);
 }
 
 size_t Buffer::ReadableBytes(){

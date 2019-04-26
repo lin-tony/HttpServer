@@ -1,7 +1,7 @@
 #include "parse.h"
 
-Parse::Parse(const std::string request){
-	this->request_ = request;
+Parse::Parse(const std::string request)
+	:request_(request){
 }
 
 HttpRequest Parse::GetParseResult(){
