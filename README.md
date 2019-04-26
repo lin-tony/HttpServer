@@ -162,6 +162,9 @@ __总结__
 std::mutex
 std::lock_guard
 std::thread
+auto
+lambda
+
 
 # To do list
 - <del>将LT改为ET模式</del>（完成，更新了Buffer::readFd和Epoll::addToEpoll，此前已在Socket::Accept中用了setNonBlock(设置非阻塞)）

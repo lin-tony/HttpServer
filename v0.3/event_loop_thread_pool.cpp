@@ -20,10 +20,10 @@ bool EventLoopThreadPool::Init(){
 }
 
 EventLoopThreadPool::~EventLoopThreadPool(){
-	for(int i = 0; i < thread_vector_.size(); ++i){
-		if(thread_vector_[i]){
-			delete thread_vector_[i];
-			thread_vector_[i] = nullptr;
+	for(auto &thread : thread_vector_){
+		if(thread){
+			delete thread;
+			thread = nullptr;
 		}
 	}
 }
