@@ -1,14 +1,14 @@
 # HttpServer
-A simple HTTP static file server, which is written on C++11 language. Use Reactor model.
+A simple HTTP static file server, which is written on C++11 language. Use Reactor design pattern.
 
 测试页：http://www.tonylin.top:8088
 
 # Index
-- [Usage](#Usage)
-- [Detail](#Detail)
-- [Reactor模式概述](#Reactor模式概述)
-- [Version history](#Version history)
-- [压力测试](#压力测试)
+## [Usage](#Usage)
+## [Detail](#Detail)
+## [Reactor模式概述](#Reactor模式概述)
+## [History](#History)
+## [Test](#Test)
 
 # Technical points
 
@@ -40,8 +40,9 @@ A simple HTTP static file server, which is written on C++11 language. Use Reacto
 |Mutex| 互斥锁|
 
 
-# Reactor模式概述：
+# Reactor模式概述
 Wikipedia：“The reactor design pattern is an event handling pattern for handling service requests delivered concurrently by one or more inputs. The service handler then demultiplexes the incoming requests and dispatches them synchronously to associated request handlers.”
+
 - MainReactor只有一个，负责响应client的连接请求，并建立TCP连接。在建立连接后用轮转方式分配到某一个SubReactor的监听队列中，
 - SubReactor有多个，每个subReactor都会在一个独立线程中运行，并且维护一个独立的NIO Selector。
 - 当主线程把新连接分配给了某个SubReactor，该线程此时可能正阻塞在多路选择器(epoll)的等待中，线程最多每隔1000ms会从epoll_wait中醒来，得到所有活跃事件，进行处理。
@@ -50,9 +51,7 @@ Wikipedia：“The reactor design pattern is an event handling pattern for handl
 ![并发模型](https://github.com/lin-tony/HttpServer/blob/master/Reactor-model.png)
 
 
-# Version history
-C++实现的高性能Http服务器。可解析响应get、head请求，可处理静态资源。
-
+# History
 
 ## v0.1
 第一版是看了很多Github上的Http服务器，结合自己的理解写出来的。模型结构如下：
@@ -76,8 +75,8 @@ C++实现的高性能Http服务器。可解析响应get、head请求，可处理
 - 解决大文件的解析
 
 
-# 压力测试
-
+# Test
+压力测试
 ## 使用postman
 结果发现postman的请求是串行的，但是至少测试得出的结果是服务器可以长时间正常运作。
 
@@ -177,7 +176,7 @@ for
 - <del>将LT改为ET模式</del>（完成，更新了Buffer::readFd和Epoll::addToEpoll，此前已在Socket::Accept中用了setNonBlock(设置非阻塞)）
 - <del>增加condition和mutex</del>（更新EventLoop类，在主线程将连接好的套接字加入到子线程等待队列中时加锁 和 子线程将等待队列中的套接字加入到监听队列中）
 - <del>挂上云服务器</del>
-- <del>解决大文件的解析</del>感天动地终于解决了大文件传输出bug的问题，是因为我代码写挫了，nsend返回-1，也将已发送的count-1了。。。
+- <del>解决大文件的解析</del>(感天动地终于解决了大文件传输出bug的问题，是因为我代码写挫了，nsend返回-1，也将已发送的count-1了。。。)
 - C++11线程池改造(使用了std::thread，还没完工)
 - 处理head请求
 - 压力测试
@@ -188,8 +187,3 @@ for
 
 
 
-
-__未能解决的Bug__
-
-135K的图片在本地可以完美解析，但是放到1Mbps的云服务器上再访问永远只能显示一半，
-用WINHEX查看文件，发现乱序了，不同次请求的乱序不一样，然而明显socket封装了底层的tcp流传输啊，我只有write可以调用。

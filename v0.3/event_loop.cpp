@@ -16,7 +16,7 @@ void EventLoop::Loop(){
 		
 		epoll_->EpollWaitToGetActive(active_events);
 		for(std::vector<Handler*>::iterator it = active_events.begin(); it != active_events.end(); ++it){
-			std::cout << "-----------Handle Request!" << std::endl;
+			//std::cout << "-----------Handle Request!" << std::endl;
 			(*it)->HandleRequest();
 			epoll_->RemoveFd((*it)->get_connect_fd());
 			delete* it;
