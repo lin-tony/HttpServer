@@ -24,6 +24,16 @@ void Handler::HandleRequest(){
 		is_close_ = true;
 		return;
 	}
+	if(request_.method == "HEAD"){
+		std::string msg = "HTTP/1.0 200 OK\r\n";
+		msg += "Server: Web Server\r\n";
+		msg += "\r\n";
+	    output_buffer_.Append(msg.c_str(), msg.size());
+		output_buffer_.SendFd(connect_fd_);
+		close(connect_fd_);
+		is_close_ = true;
+		return;
+	}
 	if(request_.method != "GET"){
 		//std::cout << "501 Not Implemented" << std::endl;
 		SendErrorMsg("501", "Not Implemented","Not implemented, Sorry");
@@ -123,6 +133,10 @@ void Handler::ParseURI(){
 	if(pos != -1){
 		fileName_ = fileName_.substr(0,pos);
 	}
+
+	//Â·¾¶¼ì²â
+	if(strstr(request_.uri.c_str(), ".."))
+		fileName_ = "./index.html";
 }
 
 void Handler::GetFileType(){

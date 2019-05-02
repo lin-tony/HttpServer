@@ -73,6 +73,7 @@ Wikipedia：“The reactor design pattern is an event handling pattern for handl
 - 根据Google C++命名规范修改所有命名，文档https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/ ，参考了https://www.cnblogs.com/chensheng-zhou/p/5127415.html  
 - 增加异常处理机制
 - 解决大文件的解析
+- 增加路径检测，不可访问服务器的上级目录
 
 
 # Test
@@ -177,13 +178,13 @@ for
 - <del>增加condition和mutex</del>（更新EventLoop类，在主线程将连接好的套接字加入到子线程等待队列中时加锁 和 子线程将等待队列中的套接字加入到监听队列中）
 - <del>挂上云服务器</del>
 - <del>解决大文件的解析</del>(感天动地终于解决了大文件传输出bug的问题，是因为我代码写挫了，nsend返回-1，也将已发送的count-1了。。。)
+- <del>压力测试</del>
 - C++11线程池改造(使用了std::thread，还没完工)
-- 处理head请求
-- 压力测试
+- <del>处理head请求</del>
 - 将Http改为长连接，以测试ET模式的性能
 - 增加基于连接状态的socket调度，主动释放超时连接
-- 静态文件路径检测
+- <del>静态文件路径检测</del>
 - 增加其他安全措施
-
+- 线程池的分配调度改进
 
 
