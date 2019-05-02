@@ -4,8 +4,8 @@ A simple HTTP static file server, which is written on C++11 language. Use Reacto
 测试页：http://www.tonylin.top:8088
 
 # Index
-__[Usage](#Usage)__
-__[Detail](#Detail)__
+[Usage](#Usage)
+[Detail](#Detail)
 __[Reactor模式概述](#Reactor模式概述)__
 __[History](#History)__
 __[Test](#Test)__
