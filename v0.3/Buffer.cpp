@@ -114,12 +114,12 @@ void Buffer::ReadFileAndWriteBack(const int fromFd, const int toFd){
 	off_t file_size;
     file_size = stbuf.st_size;
 	*/
-	char supportBuf[655350];
+	char supportBuf[65535];
 	char* ptr;
 	while(true){
 		ptr = supportBuf;
 		//读文件
-		nread = read(fromFd, ptr, 655350);
+		nread = read(fromFd, ptr, 65535);
 		//std::cout<<" nread bytes:"<<nread <<std::endl;
 		if (nread < 0){
             if (errno == EINTR){
@@ -143,13 +143,13 @@ void Buffer::ReadFileAndWriteBack(const int fromFd, const int toFd){
 					delay.tv_sec = 0;
 					delay.tv_usec = 20 * 1000; // 20 ms
 					select(0, NULL, NULL, NULL, &delay);
-				} else
-					return;
+				} else//未知错误
+					break;
+			}else{
+				readableCount -= nsend;
+				ptr += nsend;
+				//std::cout<<" send bytes:"<<nsend <<std::endl;
 			}
-			readableCount -= nsend;
-			ptr += nsend;
-			//std::cout<<" send bytes:"<<nsend <<std::endl;
 		}
-		
 	}
 }

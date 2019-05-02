@@ -1,13 +1,14 @@
 # HttpServer
 A simple HTTP static file server, which is written on C++11 language. Use Reactor model.
 
-# 索引
+测试页：http://www.tonylin.top:8088
+
+# Index
 - [Usage](#Usage)
 - [Detail](#Detail)
 - [Reactor模式概述](#Reactor模式概述)
-- [版本历史](#版本历史)
+- [Version history](#Version history)
 - [压力测试](#压力测试)
-
 
 # Technical points
 
@@ -40,6 +41,7 @@ A simple HTTP static file server, which is written on C++11 language. Use Reacto
 
 
 # Reactor模式概述：
+Wikipedia：“The reactor design pattern is an event handling pattern for handling service requests delivered concurrently by one or more inputs. The service handler then demultiplexes the incoming requests and dispatches them synchronously to associated request handlers.”
 - MainReactor只有一个，负责响应client的连接请求，并建立TCP连接。在建立连接后用轮转方式分配到某一个SubReactor的监听队列中，
 - SubReactor有多个，每个subReactor都会在一个独立线程中运行，并且维护一个独立的NIO Selector。
 - 当主线程把新连接分配给了某个SubReactor，该线程此时可能正阻塞在多路选择器(epoll)的等待中，线程最多每隔1000ms会从epoll_wait中醒来，得到所有活跃事件，进行处理。
@@ -48,14 +50,7 @@ A simple HTTP static file server, which is written on C++11 language. Use Reacto
 ![并发模型](https://github.com/lin-tony/HttpServer/blob/master/Reactor-model.png)
 
 
-
-# 关于epoll工作模式
-epoll的触发模式使用了ET模式。ET模式每次读，必须读到不能再读(出现EAGAIN)，每次写，写到不能再写(出现EAGAIN)。ET模式下事件被触发的次数比LT模式下少很多。
-
-此项目只是使用Http短连接，读取请求和返回响应后便关闭了套接字，不会有第二次触发，所以ET模式在此项目和LT并无差别，仅当练手。
-
-
-# 版本历史
+# Version history
 C++实现的高性能Http服务器。可解析响应get、head请求，可处理静态资源。
 
 
@@ -71,14 +66,14 @@ C++实现的高性能Http服务器。可解析响应get、head请求，可处理
 主要是运用C++11的知识
 - 将子线程全部由pthread改为std::thread
 - 在互斥锁上用了std::lock_guard增加稳健性，线程获得锁并崩溃后会自动释放锁，然而崩溃后整个进程会结束
-- 已将epoll_wait()改为1ms阻塞，经测试在1核空转的情况下开200线程占用50%cpu，user和system各占一半
+- 已将epoll_wait()改为1ms阻塞，经测试在1核空转的情况下开200线程占用50%cpu，user和system各占一半，但其实8线程的性能最好
 
 ## v0.3
 - 增加程序的健壮性，改进了Buffer类，增加 捕获SIGPIPE 和 write缓冲区满时，阻塞等待write释放 的功能。
 - 测试了程序性能
 - 根据Google C++命名规范修改所有命名，文档https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/ ，参考了https://www.cnblogs.com/chensheng-zhou/p/5127415.html  
 - 增加异常处理机制
-
+- 解决大文件的解析
 
 
 # 压力测试
@@ -158,18 +153,31 @@ __总结__
 参考：https://blog.csdn.net/jk110333/article/details/9190687
 
 
+
+
+
+# 关于epoll工作模式
+epoll的触发模式使用了ET模式。ET模式每次读，必须读到不能再读(出现EAGAIN)，每次写，写到不能再写(出现EAGAIN)。ET模式下事件被触发的次数比LT模式下少很多。
+
+此项目只是使用Http短连接，读取请求和返回响应后便关闭了套接字，不会有第二次触发，所以ET模式在此项目和LT并无差别，仅当练手。
+
+
+
+
 # C++11元素
 std::mutex
 std::lock_guard
 std::thread
 auto
 lambda
+for
 
 
 # To do list
 - <del>将LT改为ET模式</del>（完成，更新了Buffer::readFd和Epoll::addToEpoll，此前已在Socket::Accept中用了setNonBlock(设置非阻塞)）
 - <del>增加condition和mutex</del>（更新EventLoop类，在主线程将连接好的套接字加入到子线程等待队列中时加锁 和 子线程将等待队列中的套接字加入到监听队列中）
 - <del>挂上云服务器</del>
+- <del>解决大文件的解析</del>感天动地终于解决了大文件传输出bug的问题，是因为我代码写挫了，nsend返回-1，也将已发送的count-1了。。。
 - C++11线程池改造(使用了std::thread，还没完工)
 - 处理head请求
 - 压力测试
@@ -177,7 +185,7 @@ lambda
 - 增加基于连接状态的socket调度，主动释放超时连接
 - 静态文件路径检测
 - 增加其他安全措施
-- 解决大文件的解析
+
 
 
 
