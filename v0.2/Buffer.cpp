@@ -129,6 +129,12 @@ void Buffer::readFileAndWrite(const int fromFd, const int toFd){
 			if((nsend = write(toFd,ptr,readableCount)) < 0){
 				if(errno == EINTR){
 					nsend = 0;
+				} else if(errno == EAGAIN){
+					//缓冲区满了，所以阻塞20ms，再看能不能写
+					struct timeval delay;
+					delay.tv_sec = 0;
+					delay.tv_usec = 20 * 1000; // 20 ms
+					select(0, NULL, NULL, NULL, &delay);
 				} else
 					return;
 			}
